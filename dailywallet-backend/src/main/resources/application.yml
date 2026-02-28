@@ -81,6 +81,22 @@ app:
     # Auto-sweep M-Pesa funds to bank (recommended for security)
     auto-sweep-enabled: ${BANK_AUTO_SWEEP:false}
     auto-sweep-threshold: 10000  # Sweep when M-Pesa balance exceeds KES 10,000
+  
+  mmf:
+    # Money Market Fund configuration
+    provider: ${MMF_PROVIDER:CIC Money Market Fund}
+    annual-return-rate: ${MMF_ANNUAL_RETURN:13.0}  # Expected annual return percentage
+    auto-invest-threshold: ${MMF_AUTO_INVEST_THRESHOLD:1000.0}  # Auto-invest when savings exceed this
+    min-investment: ${MMF_MIN_INVESTMENT:100.0}  # Minimum investment amount
+    redemption-period-days: ${MMF_REDEMPTION_DAYS:1}  # Days to process redemption
+  
+  overdraft:
+    # Overdraft facility configuration
+    default-limit: ${OVERDRAFT_DEFAULT_LIMIT:500.0}  # Default overdraft limit in KES
+    daily-interest-rate: ${OVERDRAFT_DAILY_RATE:0.1}  # Daily interest rate (0.1% = 36.5% annual)
+    fixed-fee: ${OVERDRAFT_FIXED_FEE:50.0}  # Fixed fee per overdraft usage
+    grace-period-days: ${OVERDRAFT_GRACE_PERIOD:7}  # Days before interest starts
+    max-limit: ${OVERDRAFT_MAX_LIMIT:5000.0}  # Maximum overdraft limit
 
 logging:
   level:

@@ -54,6 +54,10 @@ public class Wallet {
     @Builder.Default
     private BigDecimal totalInterestEarned = BigDecimal.ZERO;
     
+    @Column(nullable = false, precision = 19, scale = 2)
+    @Builder.Default
+    private BigDecimal overdraftBalance = BigDecimal.ZERO;
+    
     @Column
     private LocalDateTime lastReleaseAt;
     
