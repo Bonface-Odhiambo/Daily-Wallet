@@ -81,6 +81,90 @@ export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
     );
   };
 
+  // Main chart rendering for SCOM 5-day chart
+  useEffect(() => {
+    const canvas = document.getElementById('mchart') as HTMLCanvasElement;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    // Set canvas dimensions explicitly
+    canvas.width = canvas.offsetWidth;
+    canvas.height = canvas.offsetHeight;
+
+    // Generate sample 5-day SCOM data
+    const data = [13.50, 13.65, 13.40, 13.75, 13.85];
+    const width = canvas.width;
+    const height = canvas.height;
+    const padding = 20;
+
+    // Clear canvas
+    ctx.clearRect(0, 0, width, height);
+
+    // Calculate min/max for scaling
+    const min = Math.min(...data) - 0.2;
+    const max = Math.max(...data) + 0.2;
+    const range = max - min;
+
+    // Draw grid lines
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+    ctx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = padding + (height - 2 * padding) * (i / 4);
+      ctx.beginPath();
+      ctx.moveTo(padding, y);
+      ctx.lineTo(width - padding, y);
+      ctx.stroke();
+    }
+
+    // Draw line chart
+    ctx.beginPath();
+    ctx.strokeStyle = '#5DBE3C';
+    ctx.lineWidth = 2;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    data.forEach((value, index) => {
+      const x = padding + (width - 2 * padding) * (index / (data.length - 1));
+      const y = height - padding - ((value - min) / range) * (height - 2 * padding);
+      
+      if (index === 0) {
+        ctx.moveTo(x, y);
+      } else {
+        ctx.lineTo(x, y);
+      }
+    });
+
+    ctx.stroke();
+
+    // Draw gradient fill under the line
+    const gradient = ctx.createLinearGradient(0, padding, 0, height - padding);
+    gradient.addColorStop(0, 'rgba(93, 190, 60, 0.3)');
+    gradient.addColorStop(1, 'rgba(93, 190, 60, 0.0)');
+
+    ctx.lineTo(width - padding, height - padding);
+    ctx.lineTo(padding, height - padding);
+    ctx.closePath();
+    ctx.fillStyle = gradient;
+    ctx.fill();
+
+    // Draw data points
+    data.forEach((value, index) => {
+      const x = padding + (width - 2 * padding) * (index / (data.length - 1));
+      const y = height - padding - ((value - min) / range) * (height - 2 * padding);
+      
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = '#5DBE3C';
+      ctx.fill();
+      ctx.strokeStyle = '#1C2340';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    });
+
+  }, []);
+
   return (
     <div className="screen on">
       <div className="sbar" style={{background: '#1C2340', position: 'relative', height: 'auto', padding: '14px 18px 16px'}}>
@@ -200,43 +284,6 @@ export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="navbar">
-        <button className="nbi" onClick={() => setActiveScreen('home')}>
-          <svg viewBox="0 0 22 22" fill="none">
-            <path d="M3 10l8-7 8 7v10H3V10z" stroke="#9CA3AF" strokeWidth="1.4" strokeLinejoin="round"/>
-          </svg>
-          <span className="nbl">Home</span>
-        </button>
-        <button className="nbi on">
-          <svg viewBox="0 0 22 22" fill="none">
-            <path d="M3 17l4.5-5.5 4 3.5 6-9" stroke="#F47C20" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span className="nbl" style={{color: 'var(--or)'}}>Markets</span>
-        </button>
-        <button className="nbi" onClick={() => setActiveScreen('wallet')}>
-          <svg viewBox="0 0 22 22" fill="none">
-            <rect x="2" y="5" width="18" height="13" rx="2" stroke="#9CA3AF" strokeWidth="1.4"/>
-            <path d="M2 9.5h18" stroke="#9CA3AF" strokeWidth="1.2"/>
-            <circle cx="16" cy="13.5" r="1.5" fill="#9CA3AF"/>
-          </svg>
-          <span className="nbl">Wallet</span>
-        </button>
-        <button className="nbi" onClick={() => setActiveScreen('borrow')}>
-          <svg viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="11" r="7.5" stroke="#9CA3AF" strokeWidth="1.4"/>
-            <path d="M11 7.5v5l3 2" stroke="#9CA3AF" strokeWidth="1.4" strokeLinecap="round"/>
-          </svg>
-          <span className="nbl">Borrow</span>
-        </button>
-        <button className="nbi" onClick={() => setActiveScreen('profile')}>
-          <svg viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="8" r="3.5" stroke="#9CA3AF" strokeWidth="1.4"/>
-            <path d="M3 20c0-4 3.6-6 8-6s8 2 8 6" stroke="#9CA3AF" strokeWidth="1.4" strokeLinecap="round"/>
-          </svg>
-          <span className="nbl">Profile</span>
-        </button>
       </div>
     </div>
   );
