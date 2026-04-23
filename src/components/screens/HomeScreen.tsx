@@ -428,44 +428,6 @@ export default function HomeScreen({ setActiveScreen }: HomeScreenProps) {
         </div>
       </div>
 
-      <div className="navbar">
-        <button className="nbi on">
-          <svg viewBox="0 0 22 22" fill="none">
-            <path d="M3 10l8-7 8 7v10H3V10z" stroke="#F47C20" strokeWidth="1.4" strokeLinejoin="round"/>
-            <rect x="8" y="15" width="3" height="5" rx="1" fill="#F47C20" opacity=".35"/>
-          </svg>
-          <span className="nbl" style={{color: 'var(--or)'}}>Home</span>
-        </button>
-        <button className="nbi" onClick={() => setActiveScreen('market')}>
-          <svg viewBox="0 0 22 22" fill="none">
-            <path d="M3 17l4.5-5.5 4 3.5 6-9" stroke="#9CA3AF" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span className="nbl">Markets</span>
-        </button>
-        <button className="nbi" onClick={() => setActiveScreen('wallet')}>
-          <svg viewBox="0 0 22 22" fill="none">
-            <rect x="2" y="5" width="18" height="13" rx="2" stroke="#9CA3AF" strokeWidth="1.4"/>
-            <path d="M2 9.5h18" stroke="#9CA3AF" strokeWidth="1.2"/>
-            <circle cx="16" cy="13.5" r="1.5" fill="#9CA3AF"/>
-          </svg>
-          <span className="nbl">Wallet</span>
-        </button>
-        <button className="nbi" onClick={() => setActiveScreen('borrow')}>
-          <svg viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="11" r="7.5" stroke="#9CA3AF" strokeWidth="1.4"/>
-            <path d="M11 7.5v5l3 2" stroke="#9CA3AF" strokeWidth="1.4" strokeLinecap="round"/>
-          </svg>
-          <span className="nbl">Borrow</span>
-        </button>
-        <button className="nbi" onClick={() => setActiveScreen('profile')}>
-          <svg viewBox="0 0 22 22" fill="none">
-            <circle cx="11" cy="8" r="3.5" stroke="#9CA3AF" strokeWidth="1.4"/>
-            <path d="M3 20c0-4 3.6-6 8-6s8 2 8 6" stroke="#9CA3AF" strokeWidth="1.4" strokeLinecap="round"/>
-          </svg>
-          <span className="nbl">Profile</span>
-        </button>
-      </div>
-
       {/* Add Money Modal */}
       {showAddModal && (
         <div style={{
