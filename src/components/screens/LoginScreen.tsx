@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { API_CONFIG } from '@/config/api';
 import authService from '@/services/authService';
 
 interface LoginScreenProps {
@@ -21,7 +22,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     setError('');
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/login', {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -77,7 +78,7 @@ export default function LoginScreen({ onLoginSuccess }: LoginScreenProps) {
     }
 
     try {
-      const response = await fetch('http://localhost:8080/api/auth/register', {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/auth/register`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

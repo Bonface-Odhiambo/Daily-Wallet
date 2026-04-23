@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_CONFIG } from '@/config/api';
 
 interface HomeScreenProps {
   setActiveScreen: (screen: string) => void;
@@ -42,7 +43,7 @@ export default function HomeScreen({ setActiveScreen }: HomeScreenProps) {
       const currentUserPhone = localStorage.getItem('userPhone') || '254712345684';
       
       // Call M-Pesa STK Push API
-      const response = await fetch('http://localhost:8080/api/mpesa/deposit', {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/mpesa/deposit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -95,7 +96,7 @@ export default function HomeScreen({ setActiveScreen }: HomeScreenProps) {
       }
       
       // Call transfer API
-      const response = await fetch('http://localhost:8080/api/transactions/transfer', {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/transactions/transfer`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +146,7 @@ export default function HomeScreen({ setActiveScreen }: HomeScreenProps) {
       }
       
       // Call MMF sweep API
-      const response = await fetch('http://localhost:8080/api/mmf/sweep', {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/mmf/sweep`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

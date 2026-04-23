@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_CONFIG } from '@/config/api';
 
 interface BorrowScreenProps {
   setActiveScreen: (screen: string) => void;
@@ -42,7 +43,7 @@ export default function BorrowScreen({ setActiveScreen }: BorrowScreenProps) {
       }
       
       // Call overdraft application API
-      const response = await fetch('http://localhost:8080/api/overdraft/apply', {
+      const response = await fetch(`${API_CONFIG.BASE_URL}/overdraft/apply`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

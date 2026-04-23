@@ -72,6 +72,13 @@ public class SecurityConfig {
             "http://localhost:63607"
         ));
         
+        // Production origins for Render deployment
+        allowedOrigins.addAll(Arrays.asList(
+            "https://daily-wallet-8ej6.onrender.com",
+            "https://daily-wallet-8ej6.onrender.com/",
+            "https://daily-wallet-8ej6.onrender.com/api"
+        ));
+        
         // Production origins - add your deployed frontend URLs here
         String productionOrigins = System.getenv("ALLOWED_ORIGINS");
         if (productionOrigins != null && !productionOrigins.trim().isEmpty()) {
