@@ -1,0 +1,11 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" },
+    { "source": "/assets/index-DXHtNiRG.js", "destination": "/assets/index-DXHtNiRG.js" },
+    { "source": "/assets/index-D4jnwzQa.js", "destination": "/assets/index-D4jnwzQa.js" },
+    { "source": "/assets/(index-.*).js", "destination": "/assets/$1.js" }
+  ]
+}
