@@ -17,6 +17,7 @@ const queryClient = new QueryClient();
 const App = () => {
   const [activeScreen, setActiveScreen] = useState("home");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
 
   useEffect(() => {
     // Check if user is already authenticated on app load
@@ -27,6 +28,23 @@ const App = () => {
     
     checkAuth();
   }, []);
+
+  useEffect(() => {
+    // Update time every second
+    const timer = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    
+    return () => clearInterval(timer);
+  }, []);
+
+  const formatTime = (date: Date) => {
+    return date.toLocaleTimeString('en-US', { 
+      hour: 'numeric', 
+      minute: '2-digit',
+      hour12: false 
+    });
+  };
 
   const handleLoginSuccess = () => {
     setIsAuthenticated(true);
@@ -45,7 +63,7 @@ const App = () => {
           <Sonner />
           <div className="min-h-screen w-full">
             <div className="sbar" id="sbar" style={{background: "#1C2340"}}>
-              <span className="stime" id="clk">9:41</span>
+              <span className="stime" id="clk">{formatTime(currentTime)}</span>
               <div className="sicons">
                 <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
                   <rect x="0" y="5" width="2.5" height="6" rx="1" fill="white" opacity=".4"/>
@@ -112,7 +130,7 @@ const App = () => {
           </div>
 
           <div className="sbar" id="sbar" style={{background: "#1C2340"}}>
-            <span className="stime" id="clk">9:41</span>
+            <span className="stime" id="clk">{formatTime(currentTime)}</span>
             <div className="sicons">
               <svg width="15" height="11" viewBox="0 0 15 11" fill="none">
                 <rect x="0" y="5" width="2.5" height="6" rx="1" fill="white" opacity=".4"/>
