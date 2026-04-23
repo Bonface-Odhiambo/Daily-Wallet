@@ -1,4 +1,7 @@
 import { useState, useEffect } from 'react';
+import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
+import { TrendingUp, TrendingDown } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface MarketsScreenProps {
   setActiveScreen: (screen: string) => void;
@@ -6,6 +9,7 @@ interface MarketsScreenProps {
 
 export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
   const [currentTime, setCurrentTime] = useState('9:41');
+  const [activeRange, setActiveRange] = useState('5D');
   const [nseData, setNseData] = useState([
     {sym: 'SCOM', name: 'Safaricom PLC', price: 13.85, chg: +0.15, pct: +1.10, up: true},
     {sym: 'EQTY', name: 'Equity Group', price: 38.20, chg: -0.30, pct: -0.78, up: false},
@@ -15,6 +19,15 @@ export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
     {sym: 'EABL', name: 'E.A. Breweries', price: 148.00, chg: +2.00, pct: +1.37, up: true},
   ]);
   const [nse20Value, setNse20Value] = useState('1847.3');
+  
+  // Sample chart data for SCOM
+  const [chartData, setChartData] = useState([
+    { time: 'Mon', price: 13.50 },
+    { time: 'Tue', price: 13.65 },
+    { time: 'Wed', price: 13.40 },
+    { time: 'Thu', price: 13.75 },
+    { time: 'Fri', price: 13.85 },
+  ]);
 
   useEffect(() => {
     const updateTime = () => {
@@ -81,89 +94,153 @@ export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
     );
   };
 
-  // Main chart rendering for SCOM 5-day chart
-  useEffect(() => {
-    const canvas = document.getElementById('mchart') as HTMLCanvasElement;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+  // NSE Stock Chart Component with Recharts
+  const NSEStockChart = ({ data, symbol, price, change }: { data: any[], symbol: string, price: number, change: number }) => {
+    const isPositive = change >= 0;
+    const color = isPositive ? '#22c55e' : '#ef4444';
 
-    // Set canvas dimensions explicitly
-    canvas.width = canvas.offsetWidth;
-    canvas.height = canvas.offsetHeight;
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        style={{background: '#1C2340', borderRadius: '16px', padding: '16px', color: 'white'}}
+      >
+        {/* Header */}
+        <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px'}}>
+          <div>
+            <h3 style={{fontSize: '24px', fontWeight: 'bold', margin: 0}}>{symbol}</h3>
+            <p style={{color: 'rgba(255,255,255,0.6)', fontSize: '12px', margin: '4px 0 0'}}>Nairobi Securities Exchange</p>
+          </div>
+          <div style={{textAlign: 'right'}}>
+            <p style={{fontSize: '24px', fontWeight: 'bold', margin: 0}}>KES {price.toFixed(2)}</p>
+            <div style={{display: 'flex', alignItems: 'center', gap: '4px', justifyContent: 'flex-end', color: isPositive ? '#22c55e' : '#ef4444'}}>
+              {isPositive ? <TrendingUp size={16}/> : <TrendingDown size={16}/>}
+              <span>{change >= 0 ? '+' : ''}{change.toFixed(2)}%</span>
+            </div>
+          </div>
+        </div>
 
-    // Generate sample 5-day SCOM data
-    const data = [13.50, 13.65, 13.40, 13.75, 13.85];
-    const width = canvas.width;
-    const height = canvas.height;
-    const padding = 20;
+        {/* Chart */}
+        <ResponsiveContainer width="100%" height={180}>
+          <AreaChart data={data}>
+            <defs>
+              <linearGradient id="colorGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor={color} stopOpacity={0.3}/>
+                <stop offset="95%" stopColor={color} stopOpacity={0}/>
+              </linearGradient>
+            </defs>
+            <XAxis dataKey="time" hide />
+            <YAxis domain={['auto', 'auto']} hide />
+            <Tooltip
+              contentStyle={{ background: '#1f2937', border: 'none', borderRadius: '8px' }}
+              labelStyle={{ color: '#9ca3af' }}
+              formatter={(value) => [`KES ${value}`, 'Price']}
+            />
+            <Area
+              type="monotone"
+              dataKey="price"
+              stroke={color}
+              strokeWidth={2.5}
+              fill="url(#colorGradient)"
+              dot={false}
+              activeDot={{ r: 6, fill: color }}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
 
-    // Clear canvas
-    ctx.clearRect(0, 0, width, height);
+        {/* Time range selector */}
+        <div style={{display: 'flex', gap: '8px', marginTop: '12px', justifyContent: 'center'}}>
+          {['1D', '5D', '1M', '3M', '1Y'].map(range => (
+            <button
+              key={range}
+              style={{
+                padding: '4px 12px',
+                borderRadius: '20px',
+                fontSize: '12px',
+                fontWeight: '500',
+                transition: 'all 0.2s',
+                background: activeRange === range ? '#F47C20' : '#374151',
+                color: activeRange === range ? 'white' : '#9ca3af',
+                border: 'none',
+                cursor: 'pointer'
+              }}
+              onClick={() => setActiveRange(range)}
+            >
+              {range}
+            </button>
+          ))}
+        </div>
+      </motion.div>
+    );
+  };
 
-    // Calculate min/max for scaling
-    const min = Math.min(...data) - 0.2;
-    const max = Math.max(...data) + 0.2;
-    const range = max - min;
+  // Financial Discipline Insight Component
+  const DisciplineInsight = ({ spendingData, stockPrice }: { spendingData: { weeklyBudget: number, weeklySpent: number }, stockPrice: number }) => {
+    const savedAmount = spendingData.weeklyBudget - spendingData.weeklySpent;
+    const sharesCanBuy = Math.floor(savedAmount / stockPrice);
 
-    // Draw grid lines
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
-    ctx.lineWidth = 1;
-    for (let i = 0; i <= 4; i++) {
-      const y = padding + (height - 2 * padding) * (i / 4);
-      ctx.beginPath();
-      ctx.moveTo(padding, y);
-      ctx.lineTo(width - padding, y);
-      ctx.stroke();
-    }
+    return (
+      <div style={{
+        background: 'linear-gradient(to right, #F47C20, #10B981)',
+        borderRadius: '16px',
+        padding: '16px',
+        color: 'white',
+        marginTop: '16px'
+      }}>
+        <p style={{fontSize: '14px', fontWeight: '500', opacity: 0.9, margin: '0 0 8px 0'}}>💡 Discipline Insight</p>
+        <p style={{fontSize: '18px', fontWeight: 'bold', margin: '0 0 4px 0'}}>
+          You saved KES {savedAmount} this week
+        </p>
+        <p style={{fontSize: '14px', opacity: 0.9, margin: '0 0 12px 0'}}>
+          That's enough to buy {sharesCanBuy} shares of Safaricom at current price.
+          <span style={{fontWeight: 'bold'}}> Invest now?</span>
+        </p>
+        <button style={{
+          marginTop: '12px',
+          background: 'white',
+          color: '#F47C20',
+          fontWeight: 'bold',
+          padding: '12px 16px',
+          borderRadius: '12px',
+          fontSize: '14px',
+          width: '100%',
+          border: 'none',
+          cursor: 'pointer'
+        }}>
+          Move savings → MMF Growth Bucket
+        </button>
+      </div>
+    );
+  };
 
-    // Draw line chart
-    ctx.beginPath();
-    ctx.strokeStyle = '#5DBE3C';
-    ctx.lineWidth = 2;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
+  // Engagement Hooks Components
+  const StreakCounter = () => (
+    <div style={{display: 'flex', alignItems: 'center', gap: '8px', background: '#FEF3EA', borderRadius: '12px', padding: '12px', marginBottom: '8px'}}>
+      <span style={{fontSize: '24px'}}>🔥</span>
+      <div>
+        <p style={{fontWeight: 'bold', color: '#F47C20', margin: '0 0 2px 0'}}>12-day discipline streak!</p>
+        <p style={{fontSize: '12px', color: '#6B7280', margin: 0}}>Stay under budget to keep it going</p>
+      </div>
+    </div>
+  );
 
-    data.forEach((value, index) => {
-      const x = padding + (width - 2 * padding) * (index / (data.length - 1));
-      const y = height - padding - ((value - min) / range) * (height - 2 * padding);
-      
-      if (index === 0) {
-        ctx.moveTo(x, y);
-      } else {
-        ctx.lineTo(x, y);
-      }
-    });
+  const PriceAlert = () => (
+    <div style={{background: '#EBF7E6', borderRadius: '12px', padding: '12px', marginBottom: '8px', borderLeft: '4px solid #10B981'}}>
+      <p style={{fontWeight: 'bold', color: '#10B981', margin: '0 0 4px 0'}}>📈 SCOM hit your target price!</p>
+      <p style={{fontSize: '12px', color: '#6B7280', margin: '0 0 4px 0'}}>KES 14.00 — Your alert triggered</p>
+      <button style={{color: '#10B981', fontWeight: 'bold', fontSize: '14px', marginTop: '4px', background: 'none', border: 'none', cursor: 'pointer', padding: 0}}>Buy now →</button>
+    </div>
+  );
 
-    ctx.stroke();
-
-    // Draw gradient fill under the line
-    const gradient = ctx.createLinearGradient(0, padding, 0, height - padding);
-    gradient.addColorStop(0, 'rgba(93, 190, 60, 0.3)');
-    gradient.addColorStop(1, 'rgba(93, 190, 60, 0.0)');
-
-    ctx.lineTo(width - padding, height - padding);
-    ctx.lineTo(padding, height - padding);
-    ctx.closePath();
-    ctx.fillStyle = gradient;
-    ctx.fill();
-
-    // Draw data points
-    data.forEach((value, index) => {
-      const x = padding + (width - 2 * padding) * (index / (data.length - 1));
-      const y = height - padding - ((value - min) / range) * (height - 2 * padding);
-      
-      ctx.beginPath();
-      ctx.arc(x, y, 4, 0, Math.PI * 2);
-      ctx.fillStyle = '#5DBE3C';
-      ctx.fill();
-      ctx.strokeStyle = '#1C2340';
-      ctx.lineWidth = 2;
-      ctx.stroke();
-    });
-
-  }, []);
+  const MicroInvestment = () => (
+    <div style={{background: '#EFF6FF', borderRadius: '12px', padding: '12px', marginBottom: '8px'}}>
+      <p style={{fontSize: '14px', fontWeight: 'bold', margin: '0 0 4px 0'}}>Round-up opportunity</p>
+      <p style={{fontSize: '12px', color: '#6B7280', margin: 0}}>
+        Your last M-Pesa was KES 847. Round up KES 153 → MMF?
+      </p>
+    </div>
+  );
 
   return (
     <div className="screen on">
@@ -190,7 +267,13 @@ export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
             </div>
           </div>
           <div style={{marginLeft: 'auto', background: 'rgba(93,190,60,.15)', border: '0.5px solid rgba(93,190,60,.3)', borderRadius: '10px', padding: '3px 9px'}}>
-            <span style={{fontSize: '10px', color: '#5DBE3C', fontWeight: '500'}}>Live</span>
+            <motion.span
+              animate={{ opacity: [1, 0.5, 1] }}
+              transition={{ repeat: Infinity, duration: 2 }}
+              style={{fontSize: '10px', color: '#5DBE3C', fontWeight: '500'}}
+            >
+              ● LIVE
+            </motion.span>
           </div>
         </div>
         <div style={{display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px'}}>
@@ -208,11 +291,26 @@ export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
       </div>
 
       <div className="scr-body">
-        <div style={{background: 'var(--dark2)', padding: '12px 18px 14px'}}>
-          <div style={{fontSize: '10px', color: 'rgba(255,255,255,.4)', marginBottom: '8px'}}>SCOM &mdash; Safaricom PLC · 5-day</div>
-          <div style={{position: 'relative', height: '100px'}}>
-            <canvas id="mchart" role="img" aria-label="Safaricom 5-day price chart" style={{width: '100%', height: '100%'}}></canvas>
-          </div>
+        <div style={{padding: '12px 18px 14px'}}>
+          <NSEStockChart 
+            data={chartData} 
+            symbol="SCOM" 
+            price={nseData[0].price} 
+            change={nseData[0].pct} 
+          />
+        </div>
+
+        <div style={{padding: '0 18px 14px'}}>
+          <DisciplineInsight 
+            spendingData={{ weeklyBudget: 5000, weeklySpent: 3200 }}
+            stockPrice={nseData[0].price}
+          />
+        </div>
+
+        <div style={{padding: '0 18px 14px'}}>
+          <StreakCounter />
+          <PriceAlert />
+          <MicroInvestment />
         </div>
 
         <div className="sec" style={{paddingTop: '12px'}}>
