@@ -79,6 +79,13 @@ public class SecurityConfig {
             "https://daily-wallet-8ej6.onrender.com/api"
         ));
         
+        // Production origins for Vercel deployment
+        allowedOrigins.addAll(Arrays.asList(
+            "https://daily-wallet.vercel.app",
+            "https://daily-wallet.vercel.app/",
+            "https://daily-wallet.vercel.app"
+        ));
+        
         // Production origins - add your deployed frontend URLs here
         String productionOrigins = System.getenv("ALLOWED_ORIGINS");
         if (productionOrigins != null && !productionOrigins.trim().isEmpty()) {

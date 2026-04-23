@@ -29,7 +29,7 @@ app:
   mpesa:
     api-url: ${MPESA_API_URL:https://api.safaricom.co.ke}
   cors:
-    allowed-origins: ${ALLOWED_ORIGINS:}
+    allowed-origins: ${ALLOWED_ORIGINS:https://daily-wallet.vercel.app,https://daily-wallet-8ej6.onrender.com}
     
 # JWT Configuration
 jwt:
