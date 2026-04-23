@@ -7,61 +7,8 @@ interface ProfileScreenProps {
 }
 
 export default function ProfileScreen({ setActiveScreen, onLogout }: ProfileScreenProps) {
-  const [currentTime, setCurrentTime] = useState('9:41');
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const time = now.getHours().toString().padStart(2, '0') + ':' + 
-                   now.getMinutes().toString().padStart(2, '0');
-      setCurrentTime(time);
-    };
-    
-    updateTime();
-    const interval = setInterval(updateTime, 15000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="screen on">
-      <div className="topbar" style={{justifyContent: 'center', flexDirection: 'column', alignItems: 'center', padding: '16px 18px 22px'}}>
-        <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px'}}>
-          <img 
-            src="/JIMUDU APP LOGO.png" 
-            alt="Jimudu Wallet Logo" 
-            style={{width: '38px', height: '38px', borderRadius: '8px'}}
-          />
-          <div>
-            <div style={{fontSize: '13px', fontWeight: '500', letterSpacing: '.4px', lineHeight: '1.1'}}>
-              <span style={{color: '#F47C20'}}>JIMUDU</span> <span style={{color: '#10B981'}}>WALLET</span>
-            </div>
-            <div style={{fontSize: '8px', color: 'rgba(255,255,255,.45)', letterSpacing: '.7px'}}>
-              SAVE. BUILD & MANAGE WEALTH
-            </div>
-          </div>
-        </div>
-        <div style={{width: '68px', height: '68px', borderRadius: '50%', background: 'var(--or)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '500', color: '#fff', marginBottom: '10px', border: '3px solid ' + 'rgba(255,255,255,.2)'}}>
-          AK
-        </div>
-        <div style={{fontSize: '16px', fontWeight: '500', color: '#fff', marginBottom: '3px'}}>
-          Amara Kariuki
-        </div>
-        <div style={{fontSize: '10px', color: 'rgba(255,255,255,.45)', marginBottom: '10px'}}>
-          amara.k@gmail.com · +254 712 345 678
-        </div>
-        <div style={{display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center'}}>
-          <span style={{background: 'rgba(93,190,60,.2)', color: '#5DBE3C', padding: '3px 10px', borderRadius: '10px', fontSize: '10px', fontWeight: '500', border: '0.5px solid rgba(93,190,60,.3)'}}>
-            KYC verified
-          </span>
-          <span style={{background: 'rgba(244,124,32,.2)', color: '#F47C20', padding: '3px 10px', borderRadius: '10px', fontSize: '10px', fontWeight: '500', border: '0.5px solid rgba(244,124,32,.3)'}}>
-            14-day streak
-          </span>
-          <span style={{background: 'rgba(255,255,255,.1)', color: 'rgba(255,255,255,.7)', padding: '3px 10px', borderRadius: '10px', fontSize: '10px', fontWeight: '500'}}>
-            Score 87
-          </span>
-        </div>
-      </div>
-
       <div className="scr-body">
         <div style={{padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '10px'}}>
           <div style={{fontSize: '10px', fontWeight: '500', color: 'var(--t3)', letterSpacing: '.05em', textTransform: 'uppercase', padding: '0 2px'}}>

@@ -8,7 +8,6 @@ interface MarketsScreenProps {
 }
 
 export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
-  const [currentTime, setCurrentTime] = useState('9:41');
   const [activeRange, setActiveRange] = useState('5D');
   const [nseData, setNseData] = useState([
     {sym: 'SCOM', name: 'Safaricom PLC', price: 13.85, chg: +0.15, pct: +1.10, up: true},
@@ -28,19 +27,6 @@ export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
     { time: 'Thu', price: 13.75 },
     { time: 'Fri', price: 13.85 },
   ]);
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const time = now.getHours().toString().padStart(2, '0') + ':' + 
-                   now.getMinutes().toString().padStart(2, '0');
-      setCurrentTime(time);
-    };
-    
-    updateTime();
-    const interval = setInterval(updateTime, 15000);
-    return () => clearInterval(interval);
-  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {

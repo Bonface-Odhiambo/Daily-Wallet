@@ -6,7 +6,6 @@ interface HomeScreenProps {
 }
 
 export default function HomeScreen({ setActiveScreen }: HomeScreenProps) {
-  const [currentTime, setCurrentTime] = useState('9:41');
   const [showAddModal, setShowAddModal] = useState(false);
   const [showSendModal, setShowSendModal] = useState(false);
   const [showInvestModal, setShowInvestModal] = useState(false);
@@ -15,19 +14,6 @@ export default function HomeScreen({ setActiveScreen }: HomeScreenProps) {
   const [sendAmount, setSendAmount] = useState(500);
   const [recipientPhone, setRecipientPhone] = useState('');
   const [investAmount, setInvestAmount] = useState(1000);
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const time = now.getHours().toString().padStart(2, '0') + ':' + 
-                   now.getMinutes().toString().padStart(2, '0');
-      setCurrentTime(time);
-    };
-    
-    updateTime();
-    const interval = setInterval(updateTime, 15000);
-    return () => clearInterval(interval);
-  }, []);
 
   // API integration functions
   const handleAddMoney = async () => {
@@ -186,39 +172,6 @@ export default function HomeScreen({ setActiveScreen }: HomeScreenProps) {
 
   return (
     <div className="screen on">
-      <div className="topbar">
-        <div style={{display: 'flex', alignItems: 'center', gap: '9px'}}>
-          <img 
-            src="/JIMUDU APP LOGO.png" 
-            alt="Jimudu Wallet Logo" 
-            style={{width: '38px', height: '38px', borderRadius: '8px'}}
-          />
-          <div>
-            <div style={{fontSize: '15px', fontWeight: '500', letterSpacing: '.4px', lineHeight: '1.1'}}>
-              <span style={{color: '#F47C20'}}>JIMUDU</span> <span style={{color: '#10B981'}}>WALLET</span>
-            </div>
-            <div style={{fontSize: '9px', color: 'rgba(255,255,255,.45)', letterSpacing: '.7px'}}>
-              SAVE. BUILD &amp; MANAGE WEALTH
-            </div>
-          </div>
-        </div>
-        <div style={{display: 'flex', gap: '7px'}}>
-          <div className="ib">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <path d="M8 1.5a4.5 4.5 0 00-4.5 4.5v3L2 11h12l-1.5-2V6A4.5 4.5 0 008 1.5z" stroke="white" strokeWidth="1.2"/>
-              <path d="M6.5 12.5a1.5 1.5 0 003 0" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
-            </svg>
-            <div className="ndot"></div>
-          </div>
-          <div className="ib">
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-              <circle cx="8" cy="5.5" r="3" stroke="white" strokeWidth="1.2"/>
-              <path d="M2 14c0-3.3 2.7-5 6-5s6 1.7 6 5" stroke="white" strokeWidth="1.2" strokeLinecap="round"/>
-            </svg>
-          </div>
-        </div>
-      </div>
-
       <div className="hero">
         <div className="hchip">
           <div className="hchip-dot"></div>

@@ -5,36 +5,8 @@ interface WalletScreenProps {
 }
 
 export default function WalletScreen({ setActiveScreen }: WalletScreenProps) {
-  const [currentTime, setCurrentTime] = useState('9:41');
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const time = now.getHours().toString().padStart(2, '0') + ':' + 
-                   now.getMinutes().toString().padStart(2, '0');
-      setCurrentTime(time);
-    };
-    
-    updateTime();
-    const interval = setInterval(updateTime, 15000);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <div className="screen on">
-      <div className="topbar">
-        <button style={{background: 'rgba(255,255,255,.1)', border: 'none', borderRadius: '9px', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-            <path d="M8.5 2L4 6.5l4.5 4.5" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-        <div>
-          <div style={{fontSize: '14px', fontWeight: '500', color: '#fff'}}>My wallet</div>
-          <div style={{fontSize: '10px', color: 'rgba(255,255,255,.45)'}}>4 discipline buckets</div>
-        </div>
-        <div style={{width: '30px'}}></div>
-      </div>
-
       <div className="scr-body">
         <div style={{padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: '9px'}}>
           <div className="bkt-big" style={{borderLeft: '3px solid var(--or)'}}>

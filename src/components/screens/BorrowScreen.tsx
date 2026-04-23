@@ -6,22 +6,8 @@ interface BorrowScreenProps {
 }
 
 export default function BorrowScreen({ setActiveScreen }: BorrowScreenProps) {
-  const [currentTime, setCurrentTime] = useState('9:41');
   const [borrowAmount, setBorrowAmount] = useState(1000);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      const time = now.getHours().toString().padStart(2, '0') + ':' + 
-                   now.getMinutes().toString().padStart(2, '0');
-      setCurrentTime(time);
-    };
-    
-    updateTime();
-    const interval = setInterval(updateTime, 15000);
-    return () => clearInterval(interval);
-  }, []);
 
   const calculateBorrowDetails = (amount: number) => {
     const interest = Math.round(amount * 0.1);
@@ -82,30 +68,6 @@ export default function BorrowScreen({ setActiveScreen }: BorrowScreenProps) {
 
   return (
     <div className="screen on">
-      <div className="topbar">
-        <button style={{background: 'rgba(255,255,255,.1)', border: 'none', borderRadius: '9px', width: '30px', height: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer'}}>
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-            <path d="M8.5 2L4 6.5l4.5 4.5" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-        </button>
-        <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
-            <img 
-              src="/JIMUDU APP LOGO.png" 
-              alt="Jimudu Wallet Logo" 
-              style={{width: '38px', height: '38px', borderRadius: '8px'}}
-            />
-            <div>
-              <div style={{fontSize: '12px', fontWeight: '500', letterSpacing: '.4px', lineHeight: '1.1'}}>
-                <span style={{color: '#F47C20'}}>JIMUDU</span> <span style={{color: '#10B981'}}>WALLET</span>
-              </div>
-              <div style={{fontSize: '8px', color: 'rgba(255,255,255,.45)', letterSpacing: '.7px'}}>
-                SAVE. BUILD & MANAGE WEALTH
-              </div>
-            </div>
-          </div>
-        <div style={{width: '30px'}}></div>
-      </div>
-
       <div className="scr-body">
         <div className="sec" style={{paddingTop: '14px'}}>
           <div className="mg">
