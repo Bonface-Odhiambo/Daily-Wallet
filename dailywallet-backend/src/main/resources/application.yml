@@ -97,6 +97,12 @@ app:
     fixed-fee: ${OVERDRAFT_FIXED_FEE:50.0}  # Fixed fee per overdraft usage
     grace-period-days: ${OVERDRAFT_GRACE_PERIOD:7}  # Days before interest starts
     max-limit: ${OVERDRAFT_MAX_LIMIT:5000.0}  # Maximum overdraft limit
+  
+  market:
+    # Alpha Vantage API configuration for NSE stock data
+    api-key: ${ALPHA_VANTAGE_API_KEY:}
+    base-url: https://www.alphavantage.co/query
+    cache-duration-minutes: 15  # Cache stock data for 15 minutes to avoid rate limits
 
 logging:
   level:

@@ -85,4 +85,11 @@ export const API_ENDPOINTS = {
     DEPOSIT: '/mpesa/deposit',
     WITHDRAW: '/mpesa/withdraw',
   },
+  // Market data endpoints (Alpha Vantage for NSE stocks)
+  MARKET: {
+    QUOTE: (symbol: string) => `/market/quote/${symbol}`,
+    HISTORY: (symbol: string) => `/market/history/${symbol}`,
+    QUOTES: (symbols: string) => `/market/quotes?symbols=${symbols}`,
+    HEALTH: '/market/health',
+  },
 };

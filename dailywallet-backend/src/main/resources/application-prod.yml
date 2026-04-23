@@ -30,6 +30,10 @@ app:
     api-url: ${MPESA_API_URL:https://api.safaricom.co.ke}
   cors:
     allowed-origins: ${ALLOWED_ORIGINS:https://daily-wallet.vercel.app,https://daily-wallet-8ej6.onrender.com}
+  market:
+    api-key: ${ALPHA_VANTAGE_API_KEY:}
+    base-url: https://www.alphavantage.co/query
+    cache-duration-minutes: 15
     
 # JWT Configuration
 jwt:
