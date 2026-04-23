@@ -55,6 +55,14 @@ body {
   gap: 14px;
 }
 
+/* Responsive layout - full width on mobile, phone preview on desktop */
+@media (max-width: 768px) {
+  .wrap {
+    padding: 0;
+    width: 100%;
+  }
+}
+
 .tabs {
   display: flex;
   gap: 6px;
@@ -93,6 +101,21 @@ body {
   background: var(--white);
   border-radius: 38px;
   overflow: hidden;
+}
+
+/* Responsive phone frame - remove constraints on mobile */
+@media (max-width: 768px) {
+  .phone {
+    width: 100%;
+    background: transparent;
+    border-radius: 0;
+    padding: 0;
+    border: none;
+  }
+  
+  .phone-inner {
+    border-radius: 0;
+  }
 }
 
 .sbar {
