@@ -1,20 +1,22 @@
-version: '3.8'
-
 services:
   backend:
     build: .
     container_name: dailywallet-backend
-    environment:
-      DATABASE_URL: ${DATABASE_URL}
-      DB_USER: ${DB_USER}
-      DB_PASSWORD: ${DB_PASSWORD}
-      JWT_SECRET: ${JWT_SECRET}
-      MPESA_CONSUMER_KEY: ${MPESA_CONSUMER_KEY}
-      MPESA_CONSUMER_SECRET: ${MPESA_CONSUMER_SECRET}
-      MPESA_ENVIRONMENT: ${MPESA_ENVIRONMENT:-production}
-      MPESA_SHORTCODE: ${MPESA_SHORTCODE}
-      MPESA_PASSKEY: ${MPESA_PASSKEY}
-      MPESA_CALLBACK_URL: ${MPESA_CALLBACK_URL:-http://localhost:8080/api/mpesa/callback}
+    env_file:
+      - .env                    # cleaner than listing every var manually
     ports:
       - "8080:8080"
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s         # gives Spring Boot time to fully start
+    volumes:
+      - ./logs:/app/logs        # persist logs outside container
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"         # prevent logs eating disk space
+        max-file: "3"
