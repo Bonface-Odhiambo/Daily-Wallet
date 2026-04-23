@@ -5,7 +5,6 @@ import {
   Plus, Minus, ArrowRight, Lock, Unlock 
 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
-import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { AddMoneyModal, SendMoneyModal } from "@/components/modals";
 import { toast } from "sonner";
@@ -82,7 +81,6 @@ function WalletDetailCard({
 }
 
 export default function WalletsPage() {
-  const [activeTab, setActiveTab] = useState("wallets");
   const [isAddMoneyOpen, setIsAddMoneyOpen] = useState(false);
   const [isSendMoneyOpen, setIsSendMoneyOpen] = useState(false);
   
@@ -212,8 +210,6 @@ export default function WalletsPage() {
           </div>
         </main>
       </div>
-
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Modals */}
       <AddMoneyModal

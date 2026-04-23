@@ -8,7 +8,6 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { TransactionItem } from "@/components/wallet/TransactionItem";
-import { BottomNav } from "@/components/layout/BottomNav";
 import {
   Select,
   SelectContent,
@@ -92,7 +91,6 @@ export default function History() {
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [walletFilter, setWalletFilter] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState("home");
 
   const filteredTransactions = useMemo(() => {
     return mockTransactions.filter((tx) => {
@@ -380,8 +378,6 @@ export default function History() {
           </p>
         </div>
       </div>
-
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
 }

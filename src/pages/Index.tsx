@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Wallet, Calendar, CalendarDays, PiggyBank, ChevronRight } from "lucide-react";
 import { Header } from "@/components/layout/Header";
-import { BottomNav } from "@/components/layout/BottomNav";
 import { WalletCard } from "@/components/wallet/WalletCard";
 import { InterestBanner } from "@/components/wallet/InterestBanner";
 import { QuickActions } from "@/components/wallet/QuickActions";
@@ -40,7 +39,6 @@ const mockTransactions: Transaction[] = [
 
 export default function Index() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("home");
   const [showNudge, setShowNudge] = useState(true);
   const [walletData, setWalletData] = useState(initialWalletData);
   const [transactions, setTransactions] = useState<Transaction[]>(mockTransactions);
@@ -257,9 +255,6 @@ export default function Index() {
           </motion.section>
         </main>
       </div>
-
-      {/* Bottom Navigation */}
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Modals */}
       <AddMoneyModal

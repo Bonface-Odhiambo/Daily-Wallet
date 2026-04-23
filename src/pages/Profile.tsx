@@ -8,7 +8,6 @@ import {
   Edit2
 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
-import { BottomNav } from "@/components/layout/BottomNav";
 import { Button } from "@/components/ui/button";
 import { SettingsModal, ProfileEditModal, HelpModal } from "@/components/modals";
 import { toast } from "sonner";
@@ -55,7 +54,6 @@ function MenuSection({ title, items }: { title: string; items: MenuItem[] }) {
 
 export default function ProfilePage() {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("profile");
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [isProfileEditOpen, setIsProfileEditOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
@@ -183,8 +181,6 @@ export default function ProfilePage() {
           </p>
         </main>
       </div>
-
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
 
       {/* Modals */}
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} />

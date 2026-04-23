@@ -5,7 +5,6 @@ import {
   ArrowUpRight, ArrowDownRight, Wallet
 } from "lucide-react";
 import { Header } from "@/components/layout/Header";
-import { BottomNav } from "@/components/layout/BottomNav";
 import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 const spendingData = [
@@ -27,7 +26,6 @@ const weeklyTrend = [
 ];
 
 export default function InsightsPage() {
-  const [activeTab, setActiveTab] = useState("insights");
   const totalSpent = spendingData.reduce((acc, item) => acc + item.value, 0);
 
   return (
@@ -227,8 +225,6 @@ export default function InsightsPage() {
           </motion.div>
         </main>
       </div>
-
-      <BottomNav activeTab={activeTab} onTabChange={setActiveTab} />
     </div>
   );
 }
