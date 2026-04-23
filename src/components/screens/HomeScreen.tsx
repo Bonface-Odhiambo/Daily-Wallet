@@ -187,18 +187,14 @@ export default function HomeScreen({ setActiveScreen }: HomeScreenProps) {
     <div className="screen on">
       <div className="topbar">
         <div style={{display: 'flex', alignItems: 'center', gap: '9px'}}>
-          <svg width="38" height="38" viewBox="0 0 38 38" fill="none">
-            <rect width="38" height="38" rx="11" fill="#F47C20"/>
-            <path d="M9 17h20a2 2 0 012 2v8a2 2 0 01-2 2H9a2 2 0 01-2-2v-8a2 2 0 012-2z" fill="white" opacity=".12"/>
-            <path d="M9 17h20a2 2 0 012 2v8a2 2 0 01-2 2H9a2 2 0 01-2-2v-8a2 2 0 012-2z" stroke="white" strokeWidth="1.3" fill="none"/>
-            <path d="M13 17v-3a6 6 0 0112 0v3" stroke="white" strokeWidth="1.4" strokeLinecap="round" fill="none"/>
-            <circle cx="23.5" cy="22" r="2" fill="white"/>
-            <path d="M5.5 18.5L8 16l2.5 2.5" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" opacity=".7"/>
-            <path d="M32.5 18.5L30 16l-2.5 2.5" stroke="white" strokeWidth="1.3" strokeLinecap="round" strokeLinejoin="round" opacity=".7"/>
-          </svg>
+          <img 
+            src="/JIMUDU APP LOGO.png" 
+            alt="Jimudu Wallet Logo" 
+            style={{width: '38px', height: '38px', borderRadius: '8px'}}
+          />
           <div>
             <div style={{fontSize: '15px', fontWeight: '500', letterSpacing: '.4px', lineHeight: '1.1'}}>
-              <span style={{color: '#F47C20'}}>JIMUDU</span> <span style={{color: 'white'}}>WALLET</span>
+              <span style={{color: '#F47C20'}}>JIMUDU</span> <span style={{color: '#10B981'}}>WALLET</span>
             </div>
             <div style={{fontSize: '9px', color: 'rgba(255,255,255,.45)', letterSpacing: '.7px'}}>
               SAVE. BUILD &amp; MANAGE WEALTH

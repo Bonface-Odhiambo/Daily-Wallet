@@ -90,9 +90,20 @@ export default function MarketsScreen({ setActiveScreen }: MarketsScreenProps) {
               <path d="M8.5 2L4 6.5l4.5 4.5" stroke="white" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </button>
-          <div>
-            <div style={{fontSize: '14px', fontWeight: '500', color: '#fff'}}>NSE Markets</div>
-            <div style={{fontSize: '10px', color: 'rgba(255,255,255,.45)'}}>Nairobi Stock Exchange</div>
+          <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
+            <img 
+              src="/JIMUDU APP LOGO.png" 
+              alt="Jimudu Wallet Logo" 
+              style={{width: '38px', height: '38px', borderRadius: '8px'}}
+            />
+            <div>
+              <div style={{fontSize: '13px', fontWeight: '500', letterSpacing: '.4px', lineHeight: '1.1'}}>
+                <span style={{color: '#F47C20'}}>JIMUDU</span> <span style={{color: '#10B981'}}>WALLET</span>
+              </div>
+              <div style={{fontSize: '9px', color: 'rgba(255,255,255,.45)', letterSpacing: '.7px'}}>
+                SAVE. BUILD & MANAGE WEALTH
+              </div>
+            </div>
           </div>
           <div style={{marginLeft: 'auto', background: 'rgba(93,190,60,.15)', border: '0.5px solid rgba(93,190,60,.3)', borderRadius: '10px', padding: '3px 9px'}}>
             <span style={{fontSize: '10px', color: '#5DBE3C', fontWeight: '500'}}>Live</span>

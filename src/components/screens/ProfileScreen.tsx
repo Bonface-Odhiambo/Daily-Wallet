@@ -25,6 +25,21 @@ export default function ProfileScreen({ setActiveScreen, onLogout }: ProfileScre
   return (
     <div className="screen on">
       <div className="topbar" style={{justifyContent: 'center', flexDirection: 'column', alignItems: 'center', padding: '16px 18px 22px'}}>
+        <div style={{display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px'}}>
+          <img 
+            src="/JIMUDU APP LOGO.png" 
+            alt="Jimudu Wallet Logo" 
+            style={{width: '38px', height: '38px', borderRadius: '8px'}}
+          />
+          <div>
+            <div style={{fontSize: '13px', fontWeight: '500', letterSpacing: '.4px', lineHeight: '1.1'}}>
+              <span style={{color: '#F47C20'}}>JIMUDU</span> <span style={{color: '#10B981'}}>WALLET</span>
+            </div>
+            <div style={{fontSize: '8px', color: 'rgba(255,255,255,.45)', letterSpacing: '.7px'}}>
+              SAVE. BUILD & MANAGE WEALTH
+            </div>
+          </div>
+        </div>
         <div style={{width: '68px', height: '68px', borderRadius: '50%', background: 'var(--or)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px', fontWeight: '500', color: '#fff', marginBottom: '10px', border: '3px solid ' + 'rgba(255,255,255,.2)'}}>
           AK
         </div>

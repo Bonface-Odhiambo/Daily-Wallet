@@ -4,12 +4,13 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import authService from "@/services/authService";
-import LoginScreen from "./components/screens/LoginScreen";
-import HomeScreen from "./components/screens/HomeScreen";
-import MarketsScreen from "./components/screens/MarketsScreen";
-import WalletScreen from "./components/screens/WalletScreen";
-import BorrowScreen from "./components/screens/BorrowScreen";
-import ProfileScreen from "./components/screens/ProfileScreen";
+import LoginScreen from "./components/screens/LoginScreen.tsx";
+import HomeScreen from "./components/screens/HomeScreen.tsx";
+import MarketsScreen from "./components/screens/MarketsScreen.tsx";
+import WalletScreen from "./components/screens/WalletScreen.tsx";
+import BorrowScreen from "./components/screens/BorrowScreen.tsx";
+import ProfileScreen from "./components/screens/ProfileScreen.tsx";
+import PWAInstallButton from "./components/PWAInstallButton.tsx";
 
 const queryClient = new QueryClient();
 
@@ -146,6 +147,7 @@ const App = () => {
             </div>
           </div>
         </div>
+        <PWAInstallButton />
       </TooltipProvider>
     </QueryClientProvider>
   );
