@@ -17,6 +17,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/transactions")
@@ -43,6 +44,24 @@ public class TransactionController {
             Authentication authentication) {
         TransactionResponse transaction = transactionService.initiateWithdrawal(authentication.getName(), request);
         return ResponseEntity.ok(ApiResponse.success("Withdrawal processed successfully", transaction));
+    }
+
+    @PostMapping("/transfer")
+    @Operation(summary = "Transfer money to another user", description = "Send money from your wallet to another Jimudu Wallet user")
+    public ResponseEntity<ApiResponse<TransactionResponse>> transfer(
+            @RequestBody Map<String, Object> request,
+            Authentication authentication) {
+        String recipientPhone = (String) request.get("recipientPhone");
+        Double amount = ((Number) request.get("amount")).doubleValue();
+        String transactionType = (String) request.get("transactionType");
+        
+        TransactionResponse transaction = transactionService.initiateTransfer(
+            authentication.getName(), 
+            recipientPhone, 
+            amount, 
+            transactionType
+        );
+        return ResponseEntity.ok(ApiResponse.success("Money sent successfully", transaction));
     }
 
     @GetMapping

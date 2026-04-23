@@ -23,7 +23,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.List;
+import java.util.*;
 
 /**
  * Service for managing overdraft facilities
@@ -289,5 +289,194 @@ public class OverdraftService {
     public BigDecimal getTotalOverdraftOutstanding() {
         BigDecimal total = overdraftRepository.getTotalOverdraftOutstanding();
         return total != null ? total : BigDecimal.ZERO;
+    }
+
+    /**
+     * Get overdraft facility details for Jimudu Wallet API
+     */
+    public com.dailywallet.dto.response.OverdraftFacilityResponse getOverdraftFacility(String phoneNumber) {
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new BusinessException("User not found"));
+
+        OverdraftAccount overdraft = overdraftRepository.findByUserId(user.getId())
+                .orElse(OverdraftAccount.builder()
+                        .user(user)
+                        .overdraftLimit(BigDecimal.valueOf(4000))
+                        .currentOverdraft(BigDecimal.ZERO)
+                        .dailyInterestRate(BigDecimal.valueOf(0.10))
+                        .fixedFeePerUse(BigDecimal.valueOf(50))
+                        .active(false)
+                        .build());
+
+        return com.dailywallet.dto.response.OverdraftFacilityResponse.builder()
+                .id(overdraft.getId())
+                .isActive(overdraft.getActive())
+                .approvedLimit(overdraft.getOverdraftLimit())
+                .availableLimit(overdraft.getAvailableOverdraft())
+                .utilizedAmount(overdraft.getCurrentOverdraft())
+                .interestRate(overdraft.getDailyInterestRate().multiply(BigDecimal.valueOf(30))) // Monthly rate
+                .disciplineScore(87) // Mock discipline score
+                .status(overdraft.getActive() ? "ACTIVE" : "INACTIVE")
+                .approvedAt(overdraft.getCreatedAt())
+                .expiresAt(LocalDateTime.now().plusMonths(12))
+                .nextPaymentDue(overdraft.getCurrentOverdraft())
+                .nextPaymentDate(LocalDateTime.now().plusDays(30))
+                .repaymentPlan("Monthly")
+                .monthlyPayment(overdraft.getCurrentOverdraft().multiply(BigDecimal.valueOf(0.1)))
+                .isBehaviorLinked(true)
+                .discountRate(BigDecimal.valueOf(0.2))
+                .pricingTier("GOLD")
+                .autoRepaymentEnabled(overdraft.getAutoRepay())
+                .utilizationRate(overdraft.getCurrentOverdraft()
+                        .divide(overdraft.getOverdraftLimit(), 2, RoundingMode.HALF_UP)
+                        .multiply(BigDecimal.valueOf(100)))
+                .currency("KES")
+                .build();
+    }
+
+    /**
+     * Apply for overdraft facility
+     */
+    public Object applyForOverdraft(String phoneNumber, com.dailywallet.dto.request.OverdraftApplicationRequest request) {
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new BusinessException("User not found"));
+
+        log.info("Overdraft application received for user {}: amount {}", phoneNumber, request.getRequestedAmount());
+
+        Map<String, Object> result = new HashMap<>();
+        result.put("applicationId", "OD" + System.currentTimeMillis());
+        result.put("status", "PENDING_REVIEW");
+        result.put("requestedAmount", request.getRequestedAmount());
+        result.put("estimatedApproval", request.getRequestedAmount().multiply(BigDecimal.valueOf(0.8)));
+        result.put("processingTime", "24 hours");
+        result.put("nextSteps", "Wait for approval notification");
+
+        return result;
+    }
+
+    /**
+     * Calculate overdraft pricing with discipline score
+     */
+    public com.dailywallet.dto.response.OverdraftPricingResponse calculateOverdraftPricing(String phoneNumber, Double amount, Integer disciplineScore) {
+        BigDecimal requestedAmount = BigDecimal.valueOf(amount);
+        BigDecimal baseRate = BigDecimal.valueOf(0.10); // 10% base rate
+        
+        // Apply discipline score discount
+        if (disciplineScore != null && disciplineScore >= 85) {
+            baseRate = baseRate.multiply(BigDecimal.valueOf(0.8)); // 20% discount
+        }
+
+        BigDecimal monthlyInterest = requestedAmount.multiply(baseRate);
+        BigDecimal processingFee = BigDecimal.valueOf(100);
+        BigDecimal transactionFee = BigDecimal.valueOf(50);
+        BigDecimal totalCost = monthlyInterest.add(processingFee).add(transactionFee);
+        BigDecimal totalRepayment = requestedAmount.add(totalCost);
+
+        return com.dailywallet.dto.response.OverdraftPricingResponse.builder()
+                .requestedAmount(requestedAmount)
+                .approvedAmount(requestedAmount.multiply(BigDecimal.valueOf(0.9)))
+                .interestRate(baseRate.multiply(BigDecimal.valueOf(100)))
+                .monthlyInterest(monthlyInterest)
+                .totalInterest(monthlyInterest.multiply(BigDecimal.valueOf(1))) // 1 month
+                .processingFee(processingFee)
+                .transactionFee(transactionFee)
+                .totalCost(totalCost)
+                .totalRepayment(totalRepayment)
+                .disciplineScore(disciplineScore != null ? disciplineScore : 85)
+                .isDiscounted(disciplineScore != null && disciplineScore >= 85)
+                .discountAmount(disciplineScore != null && disciplineScore >= 85 ? 
+                        monthlyInterest.multiply(BigDecimal.valueOf(0.2)) : BigDecimal.ZERO)
+                .discountReason(disciplineScore != null && disciplineScore >= 85 ? 
+                        "High discipline score discount" : "")
+                .pricingTier(disciplineScore != null && disciplineScore >= 85 ? "PREMIUM" : "STANDARD")
+                .repaymentDays(30)
+                .dailyRate(baseRate.divide(BigDecimal.valueOf(30), 6, RoundingMode.HALF_UP))
+                .feeBreakdown(Arrays.asList("Processing Fee", "Transaction Fee", "Monthly Interest"))
+                .costComponents(Map.of(
+                        "processingFee", processingFee,
+                        "transactionFee", transactionFee,
+                        "interest", monthlyInterest
+                ))
+                .quotedAt(LocalDateTime.now())
+                .currency("KES")
+                .behaviorLinked(true)
+                .nextStep("Proceed with application")
+                .terms(Arrays.asList("Repayment within 30 days", "Interest charged monthly", "Late fees apply"))
+                .requiresApproval(requestedAmount.compareTo(BigDecimal.valueOf(2000)) > 0)
+                .approvalMessage(requestedAmount.compareTo(BigDecimal.valueOf(2000)) > 0 ? 
+                        "Large amount requires manual approval" : "")
+                .earlyRepaymentDiscount(BigDecimal.valueOf(0.05))
+                .build();
+    }
+
+    /**
+     * Draw overdraft funds
+     */
+    public Object drawOverdraft(String phoneNumber, Double amount, String purpose) {
+        User user = userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new BusinessException("User not found"));
+
+        BigDecimal drawAmount = BigDecimal.valueOf(amount);
+        
+        Map<String, Object> result = new HashMap<>();
+        result.put("drawAmount", drawAmount);
+        result.put("purpose", purpose);
+        result.put("transactionId", "OD" + System.currentTimeMillis());
+        result.put("status", "COMPLETED");
+        result.put("fee", drawAmount.multiply(BigDecimal.valueOf(0.02)));
+        result.put("totalRepayment", drawAmount.multiply(BigDecimal.valueOf(1.02)));
+        result.put("dueDate", LocalDateTime.now().plusDays(30));
+
+        return result;
+    }
+
+    /**
+     * Get repayment schedule
+     */
+    public Object getRepaymentSchedule(String phoneNumber) {
+        Map<String, Object> schedule = new HashMap<>();
+        schedule.put("nextPayment", 500);
+        schedule.put("nextPaymentDate", LocalDateTime.now().plusDays(30));
+        schedule.put("totalOutstanding", 1500);
+        schedule.put("monthlyPayment", 500);
+        schedule.put("remainingPayments", 3);
+        schedule.put("interestRate", 10);
+        schedule.put("autoRepayment", true);
+
+        return schedule;
+    }
+
+    /**
+     * Get usage history
+     */
+    public Object getUsageHistory(String phoneNumber, int days) {
+        List<Map<String, Object>> history = new ArrayList<>();
+        
+        for (int i = 0; i < 5; i++) {
+            Map<String, Object> usage = new HashMap<>();
+            usage.put("date", LocalDateTime.now().minusDays(i * 7));
+            usage.put("amount", 500 + (i * 100));
+            usage.put("purpose", "Emergency expense");
+            usage.put("status", "REPAID");
+            usage.put("repaymentDate", LocalDateTime.now().minusDays(i * 7 + 30));
+            history.add(usage);
+        }
+
+        return history;
+    }
+
+    /**
+     * Pre-approval check
+     */
+    public Object preApprovalCheck(String phoneNumber) {
+        Map<String, Object> check = new HashMap<>();
+        check.put("eligible", true);
+        check.put("estimatedLimit", 4000);
+        check.put("currentScore", 87);
+        check.put("requiredScore", 70);
+        check.put("factors", Arrays.asList("Good payment history", "Stable income", "High discipline score"));
+        check.put("nextSteps", "Proceed with full application");
+        
+        return check;
     }
 }

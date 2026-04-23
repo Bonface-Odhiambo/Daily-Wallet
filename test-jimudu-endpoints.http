@@ -1,0 +1,269 @@
+### Jimudu Wallet API Testing Script
+### Based on comprehensive Jimudu Wallet vision document
+
+### Authentication Endpoints
+### Test user registration with Jimudu Wallet branding
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+  "phoneNumber": "254712345678",
+  "fullName": "Amara Kariuki",
+  "password": "SecurePass123!",
+  "email": "amara.kariuki@jimudu.com"
+}
+
+### Test user login
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "phoneNumber": "254712345678",
+  "password": "SecurePass123!"
+}
+
+### Test OTP verification
+POST http://localhost:8080/api/auth/verify-otp
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "phoneNumber": "254712345678",
+  "otpCode": "123456"
+}
+
+### Discipline Bucket Endpoints
+### Get all discipline buckets for user
+GET http://localhost:8080/api/discipline/buckets
+Authorization: Bearer {{token}}
+
+### Set daily allowance - Core Jimudu Wallet feature
+POST http://localhost:8080/api/discipline/daily-allowance
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "dailyAmount": 600,
+  "emergencySavingsTarget": 3000,
+  "mmfSweepEnabled": true,
+  "weeklyAllowance": 4200,
+  "monthlyAllowance": 18000
+}
+
+### Get financial health score - Key differentiator
+GET http://localhost:8080/api/discipline/health-score
+Authorization: Bearer {{token}}
+
+### Get discipline streaks and analytics
+GET http://localhost:8080/api/discipline/streaks
+Authorization: Bearer {{token}}
+
+### Reallocate funds between buckets
+POST http://localhost:8080/api/discipline/reallocate
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "fromBucket": "EMERGENCY_SAVINGS",
+  "toBucket": "SPENDING_WALLET",
+  "amount": 500,
+  "reason": "Emergency expense"
+}
+
+### Transaction Endpoints
+### Deposit money with M-Pesa integration
+POST http://localhost:8080/api/transactions/deposit
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "amount": 5000,
+  "phoneNumber": "254712345678",
+  "source": "M-PESA",
+  "reference": "Salary deposit"
+}
+
+### Withdraw from spending wallet with limits
+POST http://localhost:8080/api/transactions/withdraw
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "bucketType": "SPENDING_WALLET",
+  "amount": 150,
+  "recipientPhoneNumber": "254712345679",
+  "reference": "Grocery shopping"
+}
+
+### Get transaction history with behavioral insights
+GET http://localhost:8080/api/transactions?page=0&size=20&includeBehavioral=true
+Authorization: Bearer {{token}}
+
+### MMF Growth Bucket Endpoints
+### Get MMF investment details
+GET http://localhost:8080/api/mmf/investments
+Authorization: Bearer {{token}}
+
+### Trigger MMF sweep - Core wealth building feature
+POST http://localhost:8080/api/mmf/sweep
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "amount": 450,
+  "autoSweep": true
+}
+
+### Get MMF yield history
+GET http://localhost:8080/api/mmf/yield-history?period=monthly
+Authorization: Bearer {{token}}
+
+### Overdraft Facility Endpoints
+### Get overdraft facility details
+GET http://localhost:8080/api/overdraft/facility
+Authorization: Bearer {{token}}
+
+### Apply for behavior-linked overdraft
+POST http://localhost:8080/api/overdraft/apply
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "requestedAmount": 2000,
+  "purpose": "Emergency expense",
+  "repaymentPlan": "Next salary"
+}
+
+### Get overdraft pricing with transparency
+GET http://localhost:8080/api/overdraft/pricing?amount=1000&disciplineScore=87
+Authorization: Bearer {{token}}
+
+### Transparency Engine Endpoints
+### Get fee breakdown for transaction - Key trust builder
+POST http://localhost:8080/api/transparency/fee-breakdown
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "transactionType": "OVERDRAFT",
+  "principalAmount": 1000,
+  "duration": "30_days",
+  "disciplineScore": 87
+}
+
+### Get complete cost breakdown
+GET http://localhost:8080/api/transparency/cost-breakdown?transactionId=12345
+Authorization: Bearer {{token}}
+
+### Financial Nudges Endpoints
+### Get personalized financial nudges
+GET http://localhost:8080/api/nudges/personalized
+Authorization: Bearer {{token}}
+
+### Get spending insights and recommendations
+GET http://localhost:8080/api/nudges/spending-insights
+Authorization: Bearer {{token}}
+
+### Mark nudge as acted upon
+POST http://localhost:8080/api/nudges/{{nudgeId}}/action
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "action": "ACCEPTED",
+  "feedback": "Helpful recommendation"
+}
+
+### Analytics and Reporting Endpoints
+### Get user financial wellness metrics
+GET http://localhost:8080/api/analytics/wellness-metrics
+Authorization: Bearer {{token}}
+
+### Get spending pattern analysis
+GET http://localhost:8080/api/analytics/spending-patterns?period=30_days
+Authorization: Bearer {{token}}
+
+### Get emergency savings progress
+GET http://localhost:8080/api/analytics/emergency-progress
+Authorization: Bearer {{token}}
+
+### Scheduled Job Testing
+### Trigger daily allowance release (for testing)
+POST http://localhost:8080/api/admin/trigger-daily-allowance
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "userId": 1
+}
+
+### Trigger MMF sweep (for testing)
+POST http://localhost:8080/api/admin/trigger-mmf-sweep
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "userId": 1
+}
+
+### Update discipline scores (for testing)
+POST http://localhost:8080/api/admin/update-discipline-scores
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "userId": 1
+}
+
+### User Profile and Settings
+### Get user profile with discipline metrics
+GET http://localhost:8080/api/user/profile
+Authorization: Bearer {{token}}
+
+### Update user preferences
+PUT http://localhost:8080/api/user/preferences
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "dailyAllowanceNotifications": true,
+  "mmfSweepEnabled": true,
+  "nudgeFrequency": "daily",
+  "riskTolerance": "moderate"
+}
+
+### Get account settings
+GET http://localhost:8080/api/user/settings
+Authorization: Bearer {{token}}
+
+### B2B Partnership Endpoints
+### Get partner dashboard (for MFIs, Employers, NGOs)
+GET http://localhost:8080/api/partner/dashboard
+Authorization: Bearer {{partner_token}}
+
+### Get behavioral data insights (for partners)
+GET http://localhost:8080/api/partner/behavioral-insights?partnerId=mfi001
+Authorization: Bearer {{partner_token}}
+
+### Compliance and Reporting
+### Get transaction audit trail
+GET http://localhost:8080/api/compliance/audit-trail?userId=1&startDate=2024-01-01&endDate=2024-12-31
+Authorization: Bearer {{admin_token}}
+
+### Generate regulatory report
+POST http://localhost:8080/api/compliance/regulatory-report
+Content-Type: application/json
+Authorization: Bearer {{admin_token}}
+
+{
+  "reportType": "monthly",
+  "format": "json"
+}
+
+### Health Check
+### Basic health check
+GET http://localhost:8080/api/health
+
+### Detailed system health
+GET http://localhost:8080/api/health/detailed
+Authorization: Bearer {{admin_token}}

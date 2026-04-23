@@ -155,6 +155,52 @@ public class TransactionService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    @Transactional
+    public TransactionResponse initiateTransfer(String senderPhone, String recipientPhone, Double amount, String transactionType) {
+        User sender = getUserByPhoneNumber(senderPhone);
+        User recipient = getUserByPhoneNumber(recipientPhone);
+        
+        // Get sender's spending wallet
+        Wallet senderWallet = walletRepository.findByUserAndWalletType(sender, com.dailywallet.model.enums.WalletType.DAILY)
+                .orElseThrow(() -> new BusinessException("Sender wallet not found"));
+        
+        // Check if sender has sufficient balance
+        if (senderWallet.getBalance().compareTo(BigDecimal.valueOf(amount)) < 0) {
+            throw new BusinessException("Insufficient balance");
+        }
+        
+        // Create transfer transaction
+        Transaction transaction = Transaction.builder()
+                .user(sender)
+                .transactionType(TransactionType.TRANSFER)
+                .status(TransactionStatus.COMPLETED)
+                .amount(BigDecimal.valueOf(amount))
+                .fee(BigDecimal.ZERO) // No fee for internal transfers
+                .referenceNumber(ReferenceNumberGenerator.generateTransactionReference())
+                .recipientPhoneNumber(recipientPhone)
+                .description("Transfer to " + recipientPhone)
+                .createdAt(LocalDateTime.now())
+                .completedAt(LocalDateTime.now())
+                .build();
+        
+        // Update sender's wallet balance
+        senderWallet.setBalance(senderWallet.getBalance().subtract(BigDecimal.valueOf(amount)));
+        walletRepository.save(senderWallet);
+        
+        // Update recipient's spending wallet balance
+        Wallet recipientWallet = walletRepository.findByUserAndWalletType(recipient, com.dailywallet.model.enums.WalletType.DAILY)
+                .orElseThrow(() -> new BusinessException("Recipient wallet not found"));
+        recipientWallet.setBalance(recipientWallet.getBalance().add(BigDecimal.valueOf(amount)));
+        walletRepository.save(recipientWallet);
+        
+        // Save transaction
+        transaction = transactionRepository.save(transaction);
+        
+        log.info("Transfer completed: {} sent KES {} to {}", senderPhone, amount, recipientPhone);
+        
+        return mapToTransactionResponse(transaction);
+    }
+
     private TransactionResponse mapToTransactionResponse(Transaction transaction) {
         return TransactionResponse.builder()
                 .id(transaction.getId())

@@ -1,17 +1,21 @@
-# DailyWallet Backend API
+# Jimudu Wallet Backend API
 
-Production-ready Spring Boot backend for DailyWallet - Smart cash flow management for daily earners.
+Production-ready Spring Boot backend for Jimudu Wallet - Discipline-enforced digital financial platform for building financial health in Kenya.
 
 ## Features
 
-- **Multi-Wallet System**: Daily, Weekly, Monthly, and Savings wallets
+- **Discipline Buckets**: Spending Wallet, Emergency Savings, MMF Growth Bucket, Overdraft Facility
+- **Daily Allowance Engine**: Controlled release of funds to prevent overspending
+- **Behavior-Linked Overdraft**: Responsible credit with visible pricing and discipline scoring
+- **MMF Sweep Integration**: Automatic investment of surplus balances into money market funds
+- **Transparency Engine**: Complete fee breakdown before every transaction
+- **Financial Health Scoring**: Discipline score, emergency readiness, and wealth building metrics
 - **M-Pesa Integration**: Deposits via STK Push, withdrawals via B2C
-- **Automated Interest**: 13% annual interest on savings, calculated daily
-- **Scheduled Releases**: Time-locked wallet releases
+- **Automated Interest**: MMF yield calculations and emergency savings growth
 - **JWT Authentication**: Secure phone-based authentication
 - **OTP Verification**: SMS-based phone verification
-- **Transaction History**: Complete audit trail
-- **Fund Reallocation**: Move money between wallets
+- **Transaction History**: Complete audit trail with behavioral insights
+- **Financial Nudges**: AI-powered recommendations for better financial habits
 
 ## Tech Stack
 
@@ -109,29 +113,34 @@ GET /api/wallets
 Authorization: Bearer {token}
 ```
 
-#### Set Allocation Rule
+#### Set Daily Allowance
 ```http
-POST /api/wallets/allocation
+POST /api/discipline/daily-allowance
 Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "dailyPercentage": 15,
-  "weeklyPercentage": 25,
-  "monthlyPercentage": 40,
-  "savingsPercentage": 20
+  "dailyAmount": 600,
+  "emergencySavingsTarget": 3000,
+  "mmfSweepEnabled": true
 }
+```
+
+#### Get Financial Health Score
+```http
+GET /api/discipline/health-score
+Authorization: Bearer {token}
 ```
 
 #### Reallocate Funds
 ```http
-POST /api/wallets/reallocate
+POST /api/discipline/reallocate
 Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "fromWalletType": "SAVINGS",
-  "toWalletType": "DAILY",
+  "fromBucket": "EMERGENCY_SAVINGS",
+  "toBucket": "SPENDING_WALLET",
   "amount": 500
 }
 ```
@@ -157,7 +166,7 @@ Authorization: Bearer {token}
 Content-Type: application/json
 
 {
-  "walletType": "DAILY",
+  "bucketType": "SPENDING_WALLET",
   "amount": 500,
   "recipientPhoneNumber": "254712345678"
 }
@@ -190,19 +199,25 @@ Authorization: Bearer {token}
 
 ## Scheduled Jobs
 
-- **Daily Interest**: Runs at midnight (00:00 EAT)
-- **Daily Wallet Release**: Runs at 6:00 AM EAT
-- **Weekly Wallet Release**: Runs every Sunday at midnight
-- **Monthly Wallet Release**: Runs on 1st of each month at midnight
+- **Daily Allowance Release**: Runs at 6:00 AM EAT - releases daily spending allowance
+- **MMF Nightly Sweep**: Runs at midnight (00:00 EAT) - invests surplus into MMF
+- **Discipline Score Calculation**: Runs at 1:00 AM EAT - updates financial health metrics
+- **Emergency Fund Progress**: Runs daily at 2:00 AM EAT - tracks savings goals
+- **Overdraft Interest Calculation**: Runs daily at 3:00 AM EAT - calculates behavior-linked rates
+- **Financial Nudges Generation**: Runs at 8:00 AM EAT - creates personalized recommendations
 
 ## Database Schema
 
 Key entities:
-- `users` - User accounts
-- `wallets` - User wallets (4 per user)
-- `transactions` - All financial transactions
-- `allocation_rules` - Income allocation preferences
-- `interest_records` - Daily interest calculations
+- `users` - User accounts with discipline profiles
+- `discipline_buckets` - Jimudu Wallet buckets (SPENDING_WALLET, EMERGENCY_SAVINGS, MMF_GROWTH, OVERDRAFT_FACILITY)
+- `transactions` - All financial transactions with behavioral tags
+- `daily_allowance_rules` - Daily spending limits and release schedules
+- `discipline_scores` - Financial health metrics and streaks
+- `mmf_investments` - Money market fund sweep records
+- `overdraft_facilities` - Behavior-linked credit facilities
+- `financial_nudges` - AI-powered recommendations
+- `fee_transparency_logs` - Complete cost breakdown records
 - `otp_verifications` - Phone verification OTPs
 
 ## Deployment
@@ -230,7 +245,7 @@ railway up
 
 ```bash
 # Build Docker image
-docker build -t dailywallet-backend .
+docker build -t jimudu-wallet-backend .
 
 # Push to ECR and deploy to ECS/EKS
 ```
@@ -273,4 +288,4 @@ For issues and questions, contact the development team.
 
 ## License
 
-Proprietary - DailyWallet © 2026
+Proprietary - Jimudu Wallet © 2026

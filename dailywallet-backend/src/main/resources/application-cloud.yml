@@ -1,0 +1,110 @@
+spring:
+  application:
+    name: dailywallet-backend
+  
+  datasource:
+    # Neon PostgreSQL connection details
+    url: jdbc:postgresql://ep-polished-silence-aidig5th-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require
+    username: neondb_owner
+    password: npg_WjU8mry4zCSx
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      connection-test-query: SELECT 1
+  
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: true
+        jdbc:
+          time_zone: Africa/Nairobi
+  
+  jackson:
+    time-zone: Africa/Nairobi
+    default-property-inclusion: non_null
+
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: when-authorized
+
+app:
+  jwt:
+    secret: 9f3b7c2a8d4e6f1a5b9c0d2e7f8a1b3c4d6e9f0a2b5c7d8e1f3a6b9c2d4e7f8
+    expiration: 86400000
+  
+  mpesa:
+    consumer-key: 
+    consumer-secret: 
+    shortcode: 
+    passkey: 
+    environment: sandbox
+    api-url: sandbox
+    callback-url: http://localhost:8080/api/mpesa/callback
+  
+  wallet:
+    daily-release-time: "06:00:00"
+    weekly-release-day: SUNDAY
+    monthly-release-day: 1
+    interest-rate: 0.13
+    interest-calculation-time: "23:59:00"
+  
+  otp:
+    expiration-minutes: 5
+    length: 6
+  
+  bank:
+    account-number: 
+    account-name: DailyWallet Holdings
+    bank-code: 
+    branch-code: 
+    api-url: 
+    api-key: 
+    api-secret: 
+    auto-sweep-enabled: false
+    auto-sweep-threshold: 10000
+  
+  mmf:
+    provider: CIC Money Market Fund
+    annual-return-rate: 13.0
+    auto-invest-threshold: 1000.0
+    min-investment: 100.0
+    redemption-period-days: 1
+  
+  overdraft:
+    default-limit: 500.0
+    daily-interest-rate: 0.1
+    fixed-fee: 50.0
+    grace-period-days: 7
+    max-limit: 5000.0
+
+logging:
+  level:
+    com.dailywallet: INFO
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  show-actuator: true

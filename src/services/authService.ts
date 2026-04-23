@@ -1,5 +1,5 @@
 import httpClient from '@/lib/axios';
-import { API_ENDPOINTS } from '@/config/api';
+import { API_CONFIG, API_ENDPOINTS } from '@/config/api';
 
 export interface RegisterRequest {
   phoneNumber: string;
@@ -31,25 +31,54 @@ export interface AuthResponse {
 
 class AuthService {
   async register(data: RegisterRequest): Promise<AuthResponse> {
-    const response: any = await httpClient.post(API_ENDPOINTS.AUTH.REGISTER, data);
-    if (response.success && response.data) {
-      const authData = response.data;
+    // Direct fetch for register to avoid Authorization header
+    const response = await fetch(`${API_CONFIG.BASE_URL}${API_ENDPOINTS.AUTH.REGISTER}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Registration failed' }));
+      throw new Error(error.message || `HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    if (result.success && result.data) {
+      const authData = result.data;
       localStorage.setItem('token', authData.token);
       localStorage.setItem('user', JSON.stringify(authData.user));
       return authData;
     }
-    throw new Error(response.message || 'Registration failed');
+    throw new Error(result.message || 'Registration failed');
   }
 
   async login(data: LoginRequest): Promise<AuthResponse> {
-    const response: any = await httpClient.post(API_ENDPOINTS.AUTH.LOGIN, data);
-    if (response.success && response.data) {
-      const authData = response.data;
+    // Direct fetch for login to avoid Authorization header
+    const response = await fetch(`${API_CONFIG.BASE_URL}${API_ENDPOINTS.AUTH.LOGIN}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      const error = await response.json().catch(() => ({ message: 'Login failed' }));
+      throw new Error(error.message || `HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    
+    if (result.success && result.data) {
+      const authData = result.data;
       localStorage.setItem('token', authData.token);
       localStorage.setItem('user', JSON.stringify(authData.user));
       return authData;
     }
-    throw new Error(response.message || 'Login failed');
+    throw new Error(result.message || 'Login failed');
   }
 
   async sendOtp(phoneNumber: string): Promise<void> {
